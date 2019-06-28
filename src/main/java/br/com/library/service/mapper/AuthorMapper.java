@@ -1,9 +1,10 @@
 package br.com.library.service.mapper;
 
-import br.com.library.domain.*;
-import br.com.library.service.dto.AuthorDTO;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-import org.mapstruct.*;
+import br.com.library.domain.Author;
+import br.com.library.service.dto.AuthorDTO;
 
 /**
  * Mapper for the entity {@link Author} and its DTO {@link AuthorDTO}.

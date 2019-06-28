@@ -7,15 +7,12 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import org.apache.tomcat.util.http.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,12 +20,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.library.service.AuthorService;
 import br.com.library.service.dto.AuthorDTO;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * REST controller for managing {@link br.com.library.domain.Author}.
@@ -39,7 +35,7 @@ public class AuthorResource {
 
     private final Logger log = LoggerFactory.getLogger(AuthorResource.class);
 
-    private static final String ENTITY_NAME = "author";
+//    private static final String ENTITY_NAME = "author";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
@@ -59,14 +55,15 @@ public class AuthorResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/authors")
+    @ApiOperation(value = "Create a new author.")
     public ResponseEntity<AuthorDTO> createAuthor(@Valid @RequestBody AuthorDTO authorDTO) throws URISyntaxException {
         log.debug("REST request to save Author : {}", authorDTO);
         if (authorDTO.getId() != null) {
-            throw new BadRequestAlertException("A new author cannot already have an ID", ENTITY_NAME, "idexists");
+//            throw new BadRequestAlertException("A new author cannot already have an ID", ENTITY_NAME, "idexists");
         }
         AuthorDTO result = authorService.save(authorDTO);
         return ResponseEntity.created(new URI("/api/authors/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+//            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
@@ -83,38 +80,26 @@ public class AuthorResource {
     public ResponseEntity<AuthorDTO> updateAuthor(@Valid @RequestBody AuthorDTO authorDTO) throws URISyntaxException {
         log.debug("REST request to update Author : {}", authorDTO);
         if (authorDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+//            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         AuthorDTO result = authorService.save(authorDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, authorDTO.getId().toString()))
+//            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, authorDTO.getId().toString()))
             .body(result);
     }
 
-//    /**
-//     * {@code GET  /authors} : get all the authors.
-//     *
-//     * @param pageable the pagination information.
-//     * @param criteria the criteria which the requested entities should match.
-//     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of authors in body.
-//     */
-//    @GetMapping("/authors")
-//    public ResponseEntity<List<AuthorDTO>> getAllAuthors(AuthorCriteria criteria, Pageable pageable, @RequestParam MultiValueMap<String, String> queryParams, UriComponentsBuilder uriBuilder) {
-//        log.debug("REST request to get Authors by criteria: {}", criteria);
-//        Page<AuthorDTO> page = authorService.findByCriteria(criteria, pageable);
-//        return ResponseEntity.ok().body(page.getContent());
-//    }
-
     /**
-    * {@code GET  /authors/count} : count all the authors.
-    *
-    * @param criteria the criteria which the requested entities should match.
-    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
-    */
-    @GetMapping("/authors/count")
-    public ResponseEntity<Long> countAuthors(AuthorCriteria criteria) {
-        log.debug("REST request to count Authors by criteria: {}", criteria);
-        return ResponseEntity.ok().body(authorService.countByCriteria(criteria));
+     * {@code GET  /authors} : get all the authors.
+     *
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of authors in body.
+     */
+    @GetMapping("/authors")
+    public ResponseEntity<List<AuthorDTO>> getAllAuthors(Pageable pageable) {
+        log.debug("REST request to get Authors");
+        Page<AuthorDTO> page = authorService.findAll(pageable);
+        return ResponseEntity.ok().body(page.getContent());
     }
 
     /**

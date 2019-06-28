@@ -1,18 +1,18 @@
 package br.com.library.service;
 
-import br.com.library.domain.Author;
-import br.com.library.repository.AuthorRepository;
-import br.com.library.service.dto.AuthorDTO;
-import br.com.library.service.mapper.AuthorMapper;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import br.com.library.domain.Author;
+import br.com.library.repository.AuthorRepository;
+import br.com.library.service.dto.AuthorDTO;
+import br.com.library.service.mapper.AuthorMapper;
 
 /**
  * Service Implementation for managing {@link Author}.
@@ -81,4 +81,5 @@ public class AuthorService {
         log.debug("Request to delete Author : {}", id);
         authorRepository.deleteById(id);
     }
+    
 }

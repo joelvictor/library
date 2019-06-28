@@ -1,32 +1,29 @@
 package br.com.library.web.rest;
 
-import br.com.library.service.BookService;
-import br.com.library.web.rest.errors.BadRequestAlertException;
-import br.com.library.service.dto.BookDTO;
-import br.com.library.service.dto.BookCriteria;
-import br.com.library.service.BookQueryService;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
 
-import io.github.jhipster.web.util.HeaderUtil;
-import io.github.jhipster.web.util.PaginationUtil;
-import io.github.jhipster.web.util.ResponseUtil;
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import java.util.List;
-import java.util.Optional;
+import br.com.library.service.BookService;
+import br.com.library.service.dto.BookDTO;
 
 /**
  * REST controller for managing {@link br.com.library.domain.Book}.
@@ -44,11 +41,9 @@ public class BookResource {
 
     private final BookService bookService;
 
-    private final BookQueryService bookQueryService;
 
-    public BookResource(BookService bookService, BookQueryService bookQueryService) {
+    public BookResource(BookService bookService) {
         this.bookService = bookService;
-        this.bookQueryService = bookQueryService;
     }
 
     /**
@@ -62,11 +57,11 @@ public class BookResource {
     public ResponseEntity<BookDTO> createBook(@Valid @RequestBody BookDTO bookDTO) throws URISyntaxException {
         log.debug("REST request to save Book : {}", bookDTO);
         if (bookDTO.getId() != null) {
-            throw new BadRequestAlertException("A new book cannot already have an ID", ENTITY_NAME, "idexists");
+//            throw new BadRequestAlertException("A new book cannot already have an ID", ENTITY_NAME, "idexists");
         }
         BookDTO result = bookService.save(bookDTO);
         return ResponseEntity.created(new URI("/api/books/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+//            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
@@ -83,11 +78,11 @@ public class BookResource {
     public ResponseEntity<BookDTO> updateBook(@Valid @RequestBody BookDTO bookDTO) throws URISyntaxException {
         log.debug("REST request to update Book : {}", bookDTO);
         if (bookDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+//            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         BookDTO result = bookService.save(bookDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, bookDTO.getId().toString()))
+//            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, bookDTO.getId().toString()))
             .body(result);
     }
 
@@ -99,24 +94,24 @@ public class BookResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of books in body.
      */
     @GetMapping("/books")
-    public ResponseEntity<List<BookDTO>> getAllBooks(BookCriteria criteria, Pageable pageable, @RequestParam MultiValueMap<String, String> queryParams, UriComponentsBuilder uriBuilder) {
-        log.debug("REST request to get Books by criteria: {}", criteria);
-        Page<BookDTO> page = bookQueryService.findByCriteria(criteria, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(uriBuilder.queryParams(queryParams), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    public ResponseEntity<List<BookDTO>> getAllBooks(Pageable pageable) {
+        log.debug("REST request to get Books");
+        Page<BookDTO> page = bookService.findAll(pageable);
+//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(uriBuilder.queryParams(queryParams), page);
+        return ResponseEntity.ok().body(page.getContent());
     }
 
-    /**
-    * {@code GET  /books/count} : count all the books.
-    *
-    * @param criteria the criteria which the requested entities should match.
-    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
-    */
-    @GetMapping("/books/count")
-    public ResponseEntity<Long> countBooks(BookCriteria criteria) {
-        log.debug("REST request to count Books by criteria: {}", criteria);
-        return ResponseEntity.ok().body(bookQueryService.countByCriteria(criteria));
-    }
+//    /**
+//    * {@code GET  /books/count} : count all the books.
+//    *
+//    * @param criteria the criteria which the requested entities should match.
+//    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+//    */
+//    @GetMapping("/books/count")
+//    public ResponseEntity<Long> countBooks(BookCriteria criteria) {
+//        log.debug("REST request to count Books by criteria: {}", criteria);
+//        return ResponseEntity.ok().body(bookQueryService.countByCriteria(criteria));
+//    }
 
     /**
      * {@code GET  /books/:id} : get the "id" book.
@@ -128,7 +123,7 @@ public class BookResource {
     public ResponseEntity<BookDTO> getBook(@PathVariable Long id) {
         log.debug("REST request to get Book : {}", id);
         Optional<BookDTO> bookDTO = bookService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(bookDTO);
+        return ResponseEntity.ok().body(bookDTO.get());
     }
 
     /**
@@ -141,6 +136,8 @@ public class BookResource {
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         log.debug("REST request to delete Book : {}", id);
         bookService.delete(id);
-        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
+        return ResponseEntity.noContent()
+//        		.headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
+        		.build();
     }
 }
