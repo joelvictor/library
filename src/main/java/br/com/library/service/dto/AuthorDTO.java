@@ -1,15 +1,18 @@
 package br.com.library.service.dto;
-import java.time.LocalDate;
-import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * A DTO for the {@link br.com.library.domain.Author} entity.
  */
 public class AuthorDTO implements Serializable {
 
-    private Long id;
+	private static final long serialVersionUID = 3250180937092548167L;
+
+	private Long id;
 
     @NotNull
     private String name;

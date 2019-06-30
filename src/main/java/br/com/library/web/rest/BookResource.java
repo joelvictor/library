@@ -36,8 +36,8 @@ public class BookResource {
 
     private static final String ENTITY_NAME = "book";
 
-    @Value("${jhipster.clientApp.name}")
-    private String applicationName;
+//    @Value("${jhipster.clientApp.name}")
+//    private String applicationName;
 
     private final BookService bookService;
 

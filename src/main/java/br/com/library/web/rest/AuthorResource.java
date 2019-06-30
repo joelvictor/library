@@ -37,8 +37,8 @@ public class AuthorResource {
 
 //    private static final String ENTITY_NAME = "author";
 
-    @Value("${jhipster.clientApp.name}")
-    private String applicationName;
+//    @Value("${jhipster.clientApp.name}")
+//    private String applicationName;
 
     private final AuthorService authorService;
 

@@ -1,9 +1,10 @@
 package br.com.library.service.mapper;
 
-import br.com.library.domain.*;
-import br.com.library.service.dto.BookDTO;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-import org.mapstruct.*;
+import br.com.library.domain.Book;
+import br.com.library.service.dto.BookDTO;
 
 /**
  * Mapper for the entity {@link Book} and its DTO {@link BookDTO}.
@@ -15,8 +16,6 @@ public interface BookMapper extends EntityMapper<BookDTO, Book> {
     BookDTO toDto(Book book);
 
     @Mapping(source = "authorId", target = "author")
-    @Mapping(target = "books", ignore = true)
-    @Mapping(target = "removeBooks", ignore = true)
     Book toEntity(BookDTO bookDTO);
 
     default Book fromId(Long id) {

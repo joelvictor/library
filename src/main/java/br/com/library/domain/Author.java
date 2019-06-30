@@ -42,7 +42,7 @@ public class Author implements Serializable {
 
     @OneToMany(mappedBy = "author")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<Book> Book = new HashSet<>();
+    private Set<Book> books = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -78,29 +78,29 @@ public class Author implements Serializable {
         this.birthDate = birthDate;
     }
 
-    public Set<Book> getBook() {
-        return Book;
+    public Set<Book> getBooks() {
+        return books;
     }
 
-    public Author Book(Set<Book> Book) {
-        this.Book = Book;
+    public Author books(Set<Book> books) {
+        this.books = books;
         return this;
     }
 
     public Author addBook(Book Book) {
-        this.Book.add(Book);
+        this.books.add(Book);
         Book.setAuthor(this);
         return this;
     }
 
     public Author removeBook(Book Book) {
-        this.Book.remove(Book);
+        this.books.remove(Book);
         Book.setAuthor(null);
         return this;
     }
 
-    public void setBook(Set<Book> Book) {
-        this.Book = Book;
+    public void setBooks(Set<Book> books) {
+        this.books = books;
     }
 
     @Override
